@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
+using namespace std;
 
 Game::Game()
 {
@@ -34,6 +35,8 @@ void Game::Reset()
 
 		bricks.push_back(brick);
 	}
+	gameWon = false;
+	gameLost = false;
 }
 
 void Game::ResetBall()
@@ -81,6 +84,20 @@ void Game::Render() const
 	{
 		brick.Draw();
 	}
+
+	if (gameWon)
+	{
+		Console::SetCursorPosition(23, 20);
+		cout << "You win! Press 'R' to play again";
+
+	}
+	if (gameLost)
+	{
+		Console::SetCursorPosition(22, 20);
+		cout << "You lose. Press 'R' to play.";
+	}
+
+
 	Console::Lock(false);
 }
 
@@ -115,6 +132,7 @@ void Game::CheckCollision()
 	if (bricks.size() == 0)
 	{
 		ball.moving = false;
+		gameWon = true;
 	}
 
 	if (paddle.Contains(ball.x_position + ball.x_velocity, ball.y_velocity + ball.y_position))
@@ -123,4 +141,9 @@ void Game::CheckCollision()
 	}
 
 	// TODO #7 - If ball touches bottom of window, pause ball and display (render) defeat text with R to reset
+	if (ball.y_position >= WINDOW_HEIGHT)
+	{
+		ball.moving = false;
+		gameLost = true;
+	}
 }
